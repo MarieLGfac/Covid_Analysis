@@ -3,6 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import visdcc
+import analytics
 import api
 from departements import departement_data
 
@@ -10,16 +11,28 @@ class CustomDash(dash.Dash):
     
     def setLayout(self, options):
         self.layout = html.Div([
-                        html.H1('Analysis'),
-                        dcc.Dropdown(
-                            id='dropdown-1',
-                            options=[{'label': i, 'value': i} for i in options],
-                            value='',
-                        ),
-                        html.Div(id='depDropdown'),
+                        html.Header([
+                            html.A(html.Img(src='assets/hexa.png', id='logo')),
+                            html.H1('ANALYSIS'),
+                            dcc.Dropdown(
+                                id='dropdown-1',
+                                options=[{'label': i, 'value': i} for i in options],
+                                value='',
+                            ),
+                            html.Div(id='depDropdown'),
+                            html.Button('Actualiser les données', id = 'button-1'),
+                        ]),
                         html.Div(id='output'),
-                        html.Button('Actualiser les données', id = 'button-1'),
-                        visdcc.Run_js(id = 'javascript')
+                        visdcc.Run_js(id = 'javascript'),
+                        html.Footer([
+                            html.Nav([
+                                html.Ul([
+                                    html.Li(html.P(' ')),
+                                    html.Li(html.P(' ')),
+                                    html.Li(html.P(' '))
+                                ])
+                            ])
+                        ])
                     ])
 
 options = ('Décés', 'Réanimations', 'Hospitalisations', 'Guéris')
@@ -30,9 +43,6 @@ external_scripts = [
 
 app = CustomDash(title='Analysis', external_scripts=external_scripts)
 app.setLayout(options)
-
-
-
 
 """-----Callbacks functions----"""
 @app.callback(
@@ -59,11 +69,12 @@ def addDepDropdown(value):
 
 @app.callback(
     Output('output', 'children'),
-    [Input('dropdown-2', 'value'), Input('dropdown-2', 'value')]
+    [Input('dropdown-1', 'value'), Input('dropdown-2', 'value')]
 )
 def buildGraph(option, dep):
-    print(option + dep)
-    if option != '' and dep != '':
-        return '{}'.format(dep)
+    if option is not None and dep != '':
+        print(option)
+        graph = analytics.Analytics()
+        return dcc.Graph(figure=graph.DeathDepGraph(option, dep)) 
 
 app.run_server(debug = False)
