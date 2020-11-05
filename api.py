@@ -53,7 +53,7 @@ class Covid_rss:
         
         except FileNotFoundError as file_e:
             with open('covidData.dat', 'a+') as new_file:
-                new_file.write('n Dep_nom\t Gueris\t Deces\t reanimation\t hospitalises\t | Date\n')
+                new_file.write('Dep_nom\t Gueris\t Deces\t reanimation\t hospitalises\t | Date\n')
                 data = self.DataForChoosenDate('2020-04-10')
                 if(data != []):
                     new_file.write('; '.join([str(elem) for elem in data]) + ' | ' + '2020-04-10' + '\n')
@@ -72,20 +72,27 @@ class Covid_rss:
         return data
 
     def saveListOfData(self, dataList, dataDate):
-        with open('covidData.dat', 'r+') as file:   
-            if(len(file.readline()) == 0):
-                #print("go")
-                file.write('Dep_nom\t Gueris\t Deces\t reanimation\t hospitalises\t | Date\n')
-                data = '; '.join([str(elem) for elem in dataList])
-                file.write(data + ' | ' + str(date.today()) + '\n')
-            else:
-                lines = file.readlines()
-                #print(len(lines))
-                last_line = lines[-1].split(' | ')
-                if(last_line[-1].rstrip() != dataDate.strftime('%Y-%m-%d')):
+        try:
+            with open('covidData.dat', 'r+') as file:   
+                if(len(file.readline()) == 0):
+                    #print("go")
+                    file.write('Dep_nom\t Gueris\t Deces\t reanimation\t hospitalises\t | Date\n')
                     data = '; '.join([str(elem) for elem in dataList])
                     file.write(data + ' | ' + dataDate.strftime('%Y-%m-%d') + '\n')
+                else:
+                    lines = file.readlines()
+                    #print(len(lines))
+                    last_line = lines[-1].split(' | ')
+                    if(last_line[-1].rstrip() != dataDate.strftime('%Y-%m-%d')):
+                        data = '; '.join([str(elem) for elem in dataList])
+                        file.write(data + ' | ' + dataDate.strftime('%Y-%m-%d') + '\n')
 
+        except FileNotFoundError as file_e:
+            with open('covidData.dat', 'a+') as new_file:
+                new_file.write('Dep_nom\t Gueris\t Deces\t reanimation\t hospitalises\t | Date\n')
+                new_file.close()
+            self.saveListOfData(dataList, dataDate)
+            
     def saveSumData(self):
         try:
             with open('sumData.dat', 'r+') as fileSum:
@@ -127,26 +134,22 @@ class Covid_rss:
                         #print(listOfData[-1], 'length of data = ', len(listOfData), ' id = ', hex(id(listOfData[-1])))
                         fileSum.write(json.dumps(listOfData[-1]).replace('\'', '\"') + '\n')
             #else:
-             #   file.write(str(data_dict).replace('\'', '\"') + '\n')
+                #file.write(str(data_dict).replace('\'', '\"') + '\n')
         except FileNotFoundError as file_e:
             with open('sumData.dat', 'a') as new_file:
                 new_file.close()
             self.saveSumData()
 
-        
-        
 
-Covid_data = Covid_rss()
+"""Covid_data = Covid_rss()
 Covid_data.updateDataFiles()
-#Covid_data.saveSumData()
-#data = Covid_data.rattrapage()
-#Covid_data.request_all()
-#data = Covid_data.listOfData() #[[nom, gueris, deces, reanimation, hospitalises], ...]
-#Covid_data.saveListOfData(data)
-#Covid_data.saveSumData(data) 
-#Covid_data.sumReanimationFigure()
-#Covid_data.depDecesFigure()
-#fig = go.Figure(data=go.Bar(y=Covid_data.content[]))
-#fig.write_html('first_figure.html', auto_open=True)
-
-#app.run_server(debug=True, use_reloader=False)  # Turn off reloader if inside Jupyter
+Covid_data.saveSumData()
+data = Covid_data.rattrapage()
+Covid_data.request_all()
+data = Covid_data.listOfData() #[[nom, gueris, deces, reanimation, hospitalises], ...]
+Covid_data.saveListOfData(data)
+Covid_data.saveSumData(data) 
+Covid_data.sumReanimationFigure()
+Covid_data.depDecesFigure()
+fig = go.Figure(data=go.Bar(y=Covid_data.content[]))
+fig.write_html('first_figure.html', auto_open=True)"""

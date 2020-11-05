@@ -23,16 +23,18 @@ class CustomDash(dash.Dash):
                             html.Button('Actualiser les données', id = 'button-1'),
                         ]),
                         html.Div(id='output'),
-                        visdcc.Run_js(id = 'javascript'),
+                        visdcc.Run_js(id = 'javascript-1'),
                         html.Footer([
                             html.Nav([
                                 html.Ul([
-                                    html.Li(html.P(' ')),
-                                    html.Li(html.P(' ')),
-                                    html.Li(html.P(' '))
+                                    html.Li(html.Div(id='case-1')),
+                                    html.Li(html.Div(id='case-2')),
+                                    html.Li(html.Div(id='case-3'))
                                 ])
-                            ])
-                        ])
+                            ]), 
+                            html.Button(id='invisible_button', style={'display':'none'}),
+                            visdcc.Run_js(id = 'javascript-2'),
+                        ], id='footer')
                     ])
 
 options = ('Décés', 'Réanimations', 'Hospitalisations', 'Guéris')
@@ -46,14 +48,49 @@ app.setLayout(options)
 
 """-----Callbacks functions----"""
 @app.callback(
-    Output('javascript', 'run'),
+    Output('javascript-1', 'run'),
     [Input('button-1', 'n_clicks')]
 )
 def update(n_clicks): 
     if n_clicks:
         covid_data = api.Covid_rss()
         covid_data.updateDataFiles()
-        return "Swal.fire({icon: 'success', title: 'Data Updated !', text: 'Now, charts are waiting you'})"
+        return "Swal.fire({icon: 'success', title: 'Data Updated !', text: 'Now, charts are waiting you'});"
+
+@app.callback(
+    Output('javascript-2', 'run'),
+    [Input('invisible_button', 'n_clicks')]
+)
+def footerAnim(n_clicks):
+    print('boom')
+    return '''
+        console.log(document.readyState);
+        function sleep(milliseconds) {
+            const date = Date.now();
+            let currentDate = null;
+            do {
+                currentDate = Date.now();
+            } while (currentDate - date < milliseconds);
+        }
+
+        document.body.onmousemove = event => {
+            console.log('tet');
+            if (document.readyState == 'complete') {
+                let colors = ['rgb(255,103,103)', 'rgb(255,0,0)', 'rgb(162,0,0)'];
+                let cases = [document.getElementById('case-1'), document.getElementById('case-2'), document.getElementById('case-3')];
+                cases.forEach((v, i) => {
+                    v.style.backgroundColor = colors[i];
+                });
+                let j = Math.floor(Math.random() * Math.floor(3));
+                sleep(500);
+                cases.forEach((v, i) => {
+                    if(j > 1) j = -1;
+                    v.style.backgroundColor = colors[j+1];
+                    j++;
+                });
+            }
+        }
+        '''
 
 @app.callback(
     Output('depDropdown', 'children'),

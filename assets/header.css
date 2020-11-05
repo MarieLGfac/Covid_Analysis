@@ -84,12 +84,11 @@ header h1:hover {
     z-index: 1;
 }
 
-footer {
+#footer {
     display: inline-flex;
     background-color: white;
-    margin-top: 42%;
+    margin-top: 100%;
     margin-left: 0%;
-    background-repeat: no-repeat;
     width: 100%;
     color: #303030;
     text-align: center;
@@ -97,6 +96,47 @@ footer {
     clear: both;
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
     z-index: 100;
+}
+
+ul {
+    padding:10px;
+    margin-right: 515px;
+    list-style-type:none;
+}
+
+li {
+    margin-left:0px;
+    margin-right: 0px;
+    float:left; /*pour IE*/
+}
+
+footer nav ul div {
+    display: block;
+    padding: 2px;
+    text-decoration: none;
+}
+
+footer nav {
+    position: absolute;
+    display: inline-block;
+    color: white;
+    height: 7px;
+    right: 0px;
+}
+
+nav ul li {
+    text-transform: uppercase;
+    display: inline-block;
+    height: 7px;
+}
+
+nav ul li div {
+    padding: 1px 20px 1px 40px;
+}
+
+nav ul li div {
+    margin-left: 30px;
+    margin-top: 50px;
 }
 
 body {
