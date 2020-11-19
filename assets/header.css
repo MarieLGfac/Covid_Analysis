@@ -131,7 +131,19 @@ nav ul li {
 }
 
 nav ul li div {
-    padding: 1px 20px 1px 40px;
+    padding: 1px 20px 80px 40px;
+}
+
+#case-1 {
+    padding: 1px 20px  20px 40px;
+}
+
+#case-2 {
+    padding: 1px 20px  40px 40px;
+}
+
+#case-3 {
+    padding: 1px 20px  60px 40px;
 }
 
 nav ul li div {

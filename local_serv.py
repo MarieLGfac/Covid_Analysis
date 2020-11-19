@@ -64,17 +64,7 @@ def update(n_clicks):
 def footerAnim(n_clicks):
     print('boom')
     return '''
-        console.log(document.readyState);
-        function sleep(milliseconds) {
-            const date = Date.now();
-            let currentDate = null;
-            do {
-                currentDate = Date.now();
-            } while (currentDate - date < milliseconds);
-        }
-
         document.body.onmousemove = event => {
-            console.log('tet');
             if (document.readyState == 'complete') {
                 let colors = ['rgb(255,103,103)', 'rgb(255,0,0)', 'rgb(162,0,0)'];
                 let cases = [document.getElementById('case-1'), document.getElementById('case-2'), document.getElementById('case-3')];
@@ -82,7 +72,6 @@ def footerAnim(n_clicks):
                     v.style.backgroundColor = colors[i];
                 });
                 let j = Math.floor(Math.random() * Math.floor(3));
-                sleep(500);
                 cases.forEach((v, i) => {
                     if(j > 1) j = -1;
                     v.style.backgroundColor = colors[j+1];
