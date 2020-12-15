@@ -6,3 +6,4 @@ dash==1.16.0
 dash_core_components==1.12.0
 dash_html_components==1.1.1
 visdcc==0.0.40
+gunicorn==20.0.4
